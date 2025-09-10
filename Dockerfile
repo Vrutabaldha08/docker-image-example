@@ -7,5 +7,5 @@ COPY ./html /usr/share/nginx/html
 # Expose port 80
 EXPOSE 80
 
-# Run nginx in the foregroundi
+# Run nginx in the foregroui
 CMD ["nginx", "-g", "daemon off;"]
