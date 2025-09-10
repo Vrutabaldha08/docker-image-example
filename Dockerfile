@@ -1,37 +1,11 @@
-# Use the official Node.js runtime as the base image
-FROM node:18-alpine
+# Use a lightweight base image
+FROM nginx:alpine
 
-# Set the working directory in the container
-WORKDIR /app
+# Copy static files (if you have an index.html or app build)
+COPY ./html /usr/share/nginx/html
 
-# Copy package.json and package-lock.json (if available)
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install --only=production
-
-# Copy the rest of the application code
-COPY . .
-
-# Create a non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-
-# Change ownership of the app directory to the nextjs user
-RUN chown -R nextjs:nodejs /app
-USER nextjs
-
-# Expose the port the app runs on
+# Expose port 80
 EXPOSE 80
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV PORT=80
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:80/ || exit 1
-
-# Start the application
-CMD ["npm", "start"]
-
+# Run nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]
